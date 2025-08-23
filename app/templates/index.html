@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>Medical X-ray Classifier</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/modern-normalize/2.0.0/modern-normalize.min.css"/>
+  <style>
+    body { background:#0f172a; color:#e2e8f0; font-family:Inter, system-ui, sans-serif; }
+    .container { max-width:1100px; margin:32px auto; padding:0 16px; }
+    .card { background:#111827; border-radius:14px; padding:16px 20px; box-shadow:0 8px 24px rgba(0,0,0,.35); }
+    h1 { font-size:1.6rem; margin:0 0 16px; }
+    h2 { font-size:1.25rem; margin-top:24px; }
+    .grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:start; }
+    .btn { background:#2563eb; color:#fff; border:0; padding:10px 16px; border-radius:10px; cursor:pointer; }
+    #drop { border:2px dashed #334155; border-radius:12px; padding:18px; text-align:center; color:#94a3b8; }
+    #drop.drag { border-color:#60a5fa; color:#e2e8f0; background:#0b1222; }
+    .overlay-img { width:100%; border-radius:12px; display:block; }
+    .muted { color:#94a3b8; font-size:.95rem; }
+    a { color:#93c5fd; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="card">
+    <h1>Medical X-ray Classifier (Pneumonia Demo)</h1>
+
+    <div class="grid">
+      <div>
+        <h2>Upload an X-ray</h2>
+        <div id="drop">
+          <p class="muted">Drag & drop a JPG/PNG here, or use the picker.</p>
+          <form method="post" enctype="multipart/form-data">
+            <input id="fileInput" type="file" name="file" accept="image/*" required/>
+            <div style="height:10px"></div>
+            <button class="btn" type="submit">Predict</button>
+          </form>
+        </div>
+
+        {% if prediction %}
+          <h2 style="margin-top:28px;">Prediction: {{ prediction }}</h2>
+
+          {% if probs %}
+            <h3>Probabilities</h3>
+            <ul>
+              {% for k, v in probs.items() %}
+                <li><strong>{{ k }}</strong>: {{ '%.2f'|format(v) }}</li>
+              {% endfor %}
+            </ul>
+
+            <canvas id="probChart" height="160"></canvas>
+          {% endif %}
+
+          {% if explanation %}
+            <h3>Explanation</h3>
+            <p class="muted">{{ explanation }}</p>
+          {% endif %}
+        {% endif %}
+      </div>
+
+      <div>
+        <h2>Attention Map (Grad-CAM)</h2>
+        {% if overlay_url %}
+          <img class="overlay-img" src="{{ overlay_url }}" alt="Grad-CAM overlay"/>
+        {% else %}
+          <p class="muted">An overlay will appear here after prediction.</p>
+        {% endif %}
+        <div style="margin-top:16px;">
+          <a href="{{ url_for('history') }}">View Prediction History →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% if probs %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const ctx = document.getElementById('probChart').getContext('2d');
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: {{ probs.keys()|list|tojson }},
+      datasets: [{
+        label: 'Probability',
+        data: {{ probs.values()|list|tojson }},
+        borderWidth: 1
+      }]
+    },
+    options: { scales: { y: { min: 0, max: 1 } } }
+  });
+</script>
+{% endif %}
+
+<script>
+  const drop = document.getElementById('drop');
+  const input = document.getElementById('fileInput');
+
+  ;['dragenter','dragover'].forEach(evt => drop.addEventListener(evt, e => {
+    e.preventDefault(); e.stopPropagation(); drop.classList.add('drag');
+  }));
+  ;['dragleave','drop'].forEach(evt => drop.addEventListener(evt, e => {
+    e.preventDefault(); e.stopPropagation(); drop.classList.remove('drag');
+  }));
+  drop.addEventListener('drop', e => {
+    const files = e.dataTransfer.files;
+    if (files && files.length) { input.files = files; }
+  });
+</script>
+</body>
+</html>

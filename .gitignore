@@ -1,0 +1,21 @@
+# Python cache & venv
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Editor/OS
+.vscode/
+.idea/
+.DS_Store
+
+# Secrets
+.env
+.env.*
+
+# Training artifacts (keep if you want; safe to ignore logs)
+logs/
+
+# If your model is >100MB, DO NOT commit it; uncomment the next line:
+# best_model.pt

@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>Prediction History</title>
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/modern-normalize/2.0.0/modern-normalize.min.css"/>
+  <style>
+    body { background:#0f172a; color:#e2e8f0; font-family:Inter, system-ui, sans-serif; }
+    .container { max-width:1100px; margin:32px auto; padding:0 16px; }
+    table { width:100%; border-collapse: collapse; }
+    th, td { border-bottom:1px solid #1f2937; padding:10px 8px; text-align:left; vertical-align:top; }
+    a { color:#93c5fd; }
+    .muted { color:#94a3b8; }
+    img { max-width:220px; border-radius:8px; display:block; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Recent Predictions</h1>
+  <p class="muted"><a href="{{ url_for('index') }}">← Back to app</a></p>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Timestamp</th>
+        <th>Label</th>
+        <th>Probs</th>
+        <th>Image</th>
+        <th>Overlay</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for id, label, probs, image_name, overlay_name, ts in rows %}
+      <tr>
+        <td>{{ id }}</td>
+        <td class="muted">{{ ts }}</td>
+        <td><strong>{{ label }}</strong></td>
+        <td class="muted" style="max-width:320px;">{{ probs }}</td>
+        <td>
+          {% if image_name %}
+            <img src="{{ url_for('static', filename='uploads/' + image_name) }}" alt="">
+          {% endif %}
+        </td>
+        <td>
+          {% if overlay_name %}
+            <img src="{{ url_for('static', filename='overlays/' + overlay_name) }}" alt="">
+          {% endif %}
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
+</body>
+</html>
