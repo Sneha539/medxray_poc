@@ -1,21 +1,38 @@
-# Python cache & venv
+# --- Python ---
 __pycache__/
 *.py[cod]
+*.pyo
+*.pyd
+*.so
 *.egg-info/
+*.egg
+*.manifest
+*.spec
+
+# --- Virtual environments ---
 .venv/
 venv/
+ENV/
+env/
 
-# Editor/OS
-.vscode/
-.idea/
+# --- OS / Editor junk ---
 .DS_Store
+Thumbs.db
+.idea/
+.vscode/
 
-# Secrets
+# --- Environment variables ---
 .env
 .env.*
 
-# Training artifacts (keep if you want; safe to ignore logs)
+# --- Logs & temp files ---
+*.log
 logs/
+tmp/
 
-# If your model is >100MB, DO NOT commit it; uncomment the next line:
-# best_model.pt
+# --- Model files ---
+# Comment out if your model is <100MB and you want to push it
+#*.pth
+
+# --- Jupyter checkpoints ---
+.ipynb_checkpoints/
