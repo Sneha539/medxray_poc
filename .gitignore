@@ -23,7 +23,6 @@ Thumbs.db
 
 # --- Environment variables ---
 .env
-.env.*
 
 # --- Logs & temp files ---
 *.log
