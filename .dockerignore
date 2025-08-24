@@ -1,0 +1,23 @@
+# Ignore virtualenvs
+.venv
+venv
+ENV
+env
+
+# Ignore datasets
+data
+chest_xray
+*.zip
+
+# Ignore caches / temp
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.so
+*.egg-info
+*.log
+
+# Ignore git
+.git
+.gitignore
