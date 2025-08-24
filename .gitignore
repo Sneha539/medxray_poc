@@ -36,3 +36,7 @@ tmp/
 
 # --- Jupyter checkpoints ---
 .ipynb_checkpoints/
+# Datasets (too big for GitHub)
+data/
+chest_xray/
+*.zip
